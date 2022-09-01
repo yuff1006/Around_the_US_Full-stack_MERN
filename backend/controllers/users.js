@@ -1,5 +1,6 @@
 const handleError = require('../helpers/utils');
 const User = require('../models/user');
+const bcrypt = require('bcryptjs');
 
 function getUsers(req, res) {
   User.find()
@@ -20,11 +21,20 @@ function getUserById(req, res) {
 
 function createNewUser(req, res) {
   const { name, about, avatar, email, password } = req.body;
-  User.create({ name, about, avatar, email, password })
-    .then((user) => res.send({ data: user }))
-    .catch((err) => {
-      handleError(err, req, res);
-    });
+  User.findOne({ email }).then((user) => {
+    if (user) {
+      res.send({ error: 'This email has already been registered' });
+      // TODO
+    } else {
+      bcrypt
+        .hash(password, 10)
+        .then((hash) =>
+          User.create({ email, password: hash, about, avatar, name })
+        )
+        .then((user) => res.send(user))
+        .catch((err) => res.status(400).send(err));
+    }
+  });
 }
 
 function updateUser(req, res) {

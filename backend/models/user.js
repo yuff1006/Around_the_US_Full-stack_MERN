@@ -17,24 +17,22 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String,
     required: true,
-    minlength: 2,
-    maxlength: 30,
   },
   name: {
     type: String,
-    required: true,
     minlength: 2,
     maxlength: 30,
+    default: 'Jacques Cousteau',
   },
   about: {
     type: String,
-    required: true,
     minlength: 2,
     maxlength: 30,
+    default: 'Explorer',
   },
   avatar: {
     type: String,
-    required: true,
+    default: 'https://pictures.s3.yandex.net/resources/avatar_1604080799.jpg',
     validate: {
       validator: (v) => regexForAvatarLink.test(v),
     },
