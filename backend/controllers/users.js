@@ -19,8 +19,8 @@ function getUserById(req, res) {
 }
 
 function createNewUser(req, res) {
-  const { name, about, avatar } = req.body;
-  User.create({ name, about, avatar })
+  const { name, about, avatar, email, password } = req.body;
+  User.create({ name, about, avatar, email, password })
     .then((user) => res.send({ data: user }))
     .catch((err) => {
       handleError(err, req, res);
@@ -30,7 +30,11 @@ function createNewUser(req, res) {
 function updateUser(req, res) {
   const { name, about } = req.body;
   const owner = req.user._id;
-  User.findByIdAndUpdate(owner, { name, about }, { new: true, runValidators: true })
+  User.findByIdAndUpdate(
+    owner,
+    { name, about },
+    { new: true, runValidators: true }
+  )
     .orFail()
     .then((user) => res.send({ data: user }))
     .catch((err) => {
