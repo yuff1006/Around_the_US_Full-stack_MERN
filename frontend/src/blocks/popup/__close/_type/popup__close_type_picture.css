@@ -1,0 +1,6 @@
+.popup__close_picture {
+  position: static;
+  justify-self: flex-end;
+  grid-area: close;
+  padding: 0;
+}

@@ -1,0 +1,14 @@
+.popup__picture {
+  max-width: 75vw;
+  max-height: 75vh;
+  align-self: flex-end;
+  margin-right: 40px;
+  margin-left: 40px;
+  grid-area: picture;
+}
+
+@media screen and (max-width: 600px) {
+  .popup__picture {
+    margin: 0 30px;
+  }
+}

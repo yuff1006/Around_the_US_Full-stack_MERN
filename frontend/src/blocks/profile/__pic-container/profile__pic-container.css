@@ -1,0 +1,7 @@
+.profile__pic-container {
+  width: 120px;
+  height: 120px;
+  grid-area: profile-pic;
+  margin-right: 30px;
+  position: relative;
+}

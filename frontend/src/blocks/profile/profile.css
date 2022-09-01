@@ -1,0 +1,37 @@
+.profile {
+  display: grid;
+  grid-template-columns: min-content auto min-content;
+  grid-template-rows: min-content auto;
+  grid-template-areas:
+    "profile-pic name add"
+    "profile-pic title add";
+  max-width: 880px;
+  margin: 36.25px auto 46.25px;
+  position: relative;
+}
+
+@media screen and (max-width: 985px) {
+  .profile {
+    grid-template-columns: min-content 1fr;
+    grid-template-rows: auto;
+    grid-template-areas:
+      "profile-pic name"
+      "profile-pic title"
+      "add add";
+    max-width: 577px;
+  }
+}
+@media screen and (max-width: 600px) {
+  .profile {
+    grid-template-columns: 1fr;
+    grid-template-rows: min-content;
+    grid-template-areas:
+      "profile-pic"
+      "name"
+      "title"
+      "add";
+    justify-items: center;
+    width: 280px;
+    margin-bottom: 36px;
+  }
+}

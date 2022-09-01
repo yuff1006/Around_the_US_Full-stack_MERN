@@ -1,0 +1,10 @@
+.hamburger-menu_expand .bar-top {
+  transform: rotate(45deg);
+}
+.hamburger-menu_expand .bar-middle {
+  transform: translateX(1rem);
+  opacity: 0;
+}
+.hamburger-menu_expand .bar-bottom {
+  transform: rotate(-45deg);
+}

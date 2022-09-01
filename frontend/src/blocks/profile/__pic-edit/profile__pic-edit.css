@@ -1,0 +1,21 @@
+.profile__pic-edit {
+  width: 120px;
+  height: 120px;
+  background-image: url("../../../images/editProfileIcon.svg");
+  cursor: pointer;
+  border: none;
+  background-repeat: no-repeat;
+  padding: 0;
+  background-position: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-radius: 100%;
+  opacity: 0;
+  transition: opacity 0.3s linear;
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+.profile__pic-edit:hover {
+  opacity: 1;
+}

@@ -1,0 +1,17 @@
+.popup__close-and-picture {
+  max-width: calc(75vw + 80px);
+  display: grid;
+  max-height: calc(75vh + 40px + 25px);
+  grid-template-areas:
+  "close close"
+  "picture picture"
+  "caption caption";
+
+}
+
+@media screen and (max-width: 600px) {
+  .popup__close-and-picture {
+    max-width: calc(75vw + 60px);
+    max-height: calc(75vh + 30px + 25px);
+  }
+}

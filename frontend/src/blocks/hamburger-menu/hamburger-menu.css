@@ -1,0 +1,30 @@
+.hamburger-menu {
+  margin: 30px;
+  display: none;
+  flex-flow: column wrap;
+  justify-content: space-between;
+  height: 24px;
+  width: 24px;
+  cursor: pointer;
+  transition: opacity ease-out 0.5s;
+}
+.bar-top,
+.bar-middle,
+.bar-bottom {
+  height: 3px;
+  background: white;
+  border-radius: 5px;
+  margin: 2px 0;
+  transform-origin: left;
+  transition: all 0.5s;
+  width: 24px;
+}
+
+.hamburger-menu:hover {
+  opacity: 0.6;
+}
+@media screen and (max-width: 600px) {
+  .hamburger-menu {
+    display: flex;
+  }
+}
