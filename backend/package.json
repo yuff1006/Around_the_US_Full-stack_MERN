@@ -27,8 +27,10 @@
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
+    "dotenv": "^16.0.2",
     "express": "^4.18.1",
     "helmet": "^5.1.0",
+    "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.4.1",
     "validator": "^13.7.0"
   }

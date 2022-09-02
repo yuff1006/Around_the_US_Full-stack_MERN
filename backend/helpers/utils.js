@@ -5,13 +5,20 @@ function handleError(err, req, res) {
     BAD_REQUEST: 400,
     FORBIDDEN: 403,
     NOT_FOUND: 404,
+    UNAUTHORIZED: 401,
   };
   if (err.name === 'DocumentNotFoundError') {
-    res.status(errorTypes.NOT_FOUND).send({ message: 'Requested information not found' });
+    res
+      .status(errorTypes.NOT_FOUND)
+      .send({ message: 'Requested information not found' });
   } else if (err.name === 'ValidationError' || err.name === 'CastError') {
-    res.status(errorTypes.BAD_REQUEST).send({ message: 'Please make a valid request' });
+    res
+      .status(errorTypes.BAD_REQUEST)
+      .send({ message: 'Please make a valid request' });
   } else {
-    res.status(errorTypes.SERVER_ERROR).send({ message: 'An error has occurred on the server' });
+    res
+      .status(errorTypes.SERVER_ERROR)
+      .send({ message: 'An error has occurred on the server' });
   }
 }
 module.exports = handleError;

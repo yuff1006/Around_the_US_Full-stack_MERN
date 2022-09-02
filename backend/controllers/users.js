@@ -1,6 +1,9 @@
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const handleError = require('../helpers/utils');
 const User = require('../models/user');
-const bcrypt = require('bcryptjs');
+
+const { JWT_SECRET } = process.env;
 
 function getUsers(req, res) {
   User.find()
@@ -29,12 +32,26 @@ function createNewUser(req, res) {
       bcrypt
         .hash(password, 10)
         .then((hash) =>
-          User.create({ email, password: hash, about, avatar, name })
+          User.create({ email, password: hash, about, avatar, name }),
         )
-        .then((user) => res.send(user))
+        .then((userRes) => res.send(userRes))
         .catch((err) => res.status(400).send(err));
     }
   });
+}
+
+function login(req, res) {
+  const { email, password } = req.body;
+  User.findUserByCredentials(email, password)
+    .then((user) => {
+      const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
+        expiresIn: '7d',
+      });
+      res.send({ token });
+    })
+    .catch((err) => {
+      res.status(401).send({ message: err.message });
+    });
 }
 
 function updateUser(req, res) {
@@ -43,7 +60,7 @@ function updateUser(req, res) {
   User.findByIdAndUpdate(
     owner,
     { name, about },
-    { new: true, runValidators: true }
+    { new: true, runValidators: true },
   )
     .orFail()
     .then((user) => res.send({ data: user }))
@@ -68,4 +85,5 @@ module.exports = {
   createNewUser,
   updateUser,
   updateAvatar,
+  login,
 };

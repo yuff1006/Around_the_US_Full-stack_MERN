@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 
 const helmet = require('helmet');
+require('dotenv').config();
 
 const app = express();
 app.use(helmet());
@@ -11,6 +12,8 @@ const { PORT = 3000 } = process.env;
 const userRouter = require('./routes/users');
 const cardsRouter = require('./routes/cards');
 const homePageRouter = require('./routes/app');
+const { createNewUser, login } = require('./controllers/users');
+const auth = require('./middlewares/auth');
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -20,6 +23,11 @@ app.use((req, res, next) => {
   };
   next();
 });
+app.post('/signin', login);
+app.post('/signup', createNewUser);
+
+app.use(auth);
+
 app.use('/', homePageRouter);
 app.use('/', userRouter);
 app.use('/', cardsRouter);
