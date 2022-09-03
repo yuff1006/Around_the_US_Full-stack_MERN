@@ -1,27 +1,26 @@
-import { useState, useEffect } from "react";
-import Header from "./Header";
-import Main from "./Main";
-import Footer from "./Footer";
-import ImagePopup from "./ImagePopup";
-import EditProfilePopup from "./EditProfilePopup";
-import EditAvatarPopup from "./EditAvatarPopup";
-import AddPlacePopup from "./AddPlacePopup";
-import DeleteCardConfirmationPopup from "./DeleteCardConfirmationPopup";
-import { api } from "../utils/api";
-import { CurrentUserContext } from "../contexts/CurrentUserContext";
-import { CardsContext } from "../contexts/CardsContext";
-import { DeletedCardContext } from "../contexts/DeletedCardContext";
-import { Switch, Route, Redirect, useHistory } from "react-router-dom";
-import Login from "./Login";
-import Register from "./Register";
-import InfoTooltip from "./InfoTooltip";
-import ProtectedRoute from "./ProtectedRoute";
-import { login, signup, verifyJWT } from "../utils/auth";
+import { useState, useEffect } from 'react';
+import Header from './Header';
+import Main from './Main';
+import Footer from './Footer';
+import ImagePopup from './ImagePopup';
+import EditProfilePopup from './EditProfilePopup';
+import EditAvatarPopup from './EditAvatarPopup';
+import AddPlacePopup from './AddPlacePopup';
+import DeleteCardConfirmationPopup from './DeleteCardConfirmationPopup';
+import { api } from '../utils/api';
+import { CurrentUserContext } from '../contexts/CurrentUserContext';
+import { CardsContext } from '../contexts/CardsContext';
+import { DeletedCardContext } from '../contexts/DeletedCardContext';
+import { Switch, Route, Redirect, useHistory } from 'react-router-dom';
+import Login from './Login';
+import Register from './Register';
+import InfoTooltip from './InfoTooltip';
+import ProtectedRoute from './ProtectedRoute';
+import { login, signup, verifyJWT } from '../utils/auth';
 
 function App() {
   const history = useHistory();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [loggedInUser, setLoggedInUser] = useState();
   const [isRegistrationSuccess, setIsRegistrationSuccess] = useState(false);
   const [isInfoToolTipPopupOpen, setIsInfoToolTipPopupOpen] = useState(false);
   const [isEditProfilePopupOpen, setEditProfilePopupOpen] = useState(false);
@@ -39,11 +38,12 @@ function App() {
   const [isButtonStateLoading, setButtonStateLoading] = useState(false);
 
   useEffect(() => {
-    const storedJWT = localStorage.getItem("jwt");
+    const storedJWT = localStorage.getItem('jwt');
     if (storedJWT) {
       verifyJWT(storedJWT).then(({ data }) => {
         setIsLoggedIn(true);
-        setLoggedInUser(data.email);
+        console.log(data);
+        setCurrentUser(data);
       });
     } else {
       return;
@@ -61,13 +61,13 @@ function App() {
   }, []);
   useEffect(() => {
     function handleEscClose(evt) {
-      if (evt.key === "Escape") {
+      if (evt.key === 'Escape') {
         closeAllPopups();
       }
     }
-    document.addEventListener("keyup", handleEscClose);
+    document.addEventListener('keyup', handleEscClose);
     return () => {
-      document.removeEventListener("keyup", handleEscClose);
+      document.removeEventListener('keyup', handleEscClose);
     };
   }, []);
   useEffect(() => {
@@ -202,10 +202,11 @@ function App() {
   function handleLoginSubmit(loginCredentials) {
     login(loginCredentials)
       .then((data) => {
+        console.log(data);
         if (data.token) {
-          localStorage.setItem("jwt", data.token);
+          localStorage.setItem('jwt', data.token);
           setIsLoggedIn(true);
-          setLoggedInUser(loginCredentials.email);
+          history.push('/main');
         } else {
           return;
         }
@@ -219,7 +220,7 @@ function App() {
   function handleRegisterSubmit(signupCredentials) {
     signup(signupCredentials)
       .then(() => {
-        history.push("/signin");
+        history.push('/signin');
         setIsInfoToolTipPopupOpen(true);
         setIsRegistrationSuccess(true);
       })
@@ -231,26 +232,26 @@ function App() {
 
   function handleLogOut() {
     setIsLoggedIn(false);
-    localStorage.removeItem("jwt");
+    localStorage.removeItem('jwt');
   }
 
   return (
-    <div className="App">
-      <div className="page">
+    <div className='App'>
+      <div className='page'>
         <InfoTooltip
-          name="infotooltip"
+          name='infotooltip'
           isOpen={isInfoToolTipPopupOpen}
           success={isRegistrationSuccess}
           onClose={closeAllPopups}
         />
         <Switch>
-          <ProtectedRoute path={"/main"} isLoggedIn={isLoggedIn}>
-            <Route path="/main">
+          <ProtectedRoute path={'/main'} isLoggedIn={isLoggedIn}>
+            <Route path='/main'>
               <CurrentUserContext.Provider value={currentUser}>
                 <Header
                   isLoggedIn={isLoggedIn}
                   onLogOut={handleLogOut}
-                  loggedInUser={loggedInUser}
+                  loggedInUser={currentUser.email}
                 />
                 <CardsContext.Provider value={cards}>
                   <Main
@@ -264,7 +265,7 @@ function App() {
                 </CardsContext.Provider>
                 <Footer />
                 <ImagePopup
-                  name="picture"
+                  name='picture'
                   card={selectedCard}
                   onClose={closeAllPopups}
                   isOpen={isPicturePopupOpen}
@@ -298,25 +299,25 @@ function App() {
               </CurrentUserContext.Provider>
             </Route>
           </ProtectedRoute>
-          <Route path="/signin">
-            {isLoggedIn && <Redirect to="/main" />}
+          <Route path='/signin'>
+            {isLoggedIn && <Redirect to='/main' />}
             <Header
               isLoggedIn={isLoggedIn}
-              onPage="login"
+              onPage='login'
               onLogOut={handleLogOut}
             />
             <Login onSubmit={handleLoginSubmit} />
           </Route>
-          <Route path="/signup">
+          <Route path='/signup'>
             <Header
               isLoggedIn={isLoggedIn}
-              onPage="signup"
+              onPage='signup'
               onLogOut={handleLogOut}
             />
             <Register onSubmit={handleRegisterSubmit} />
           </Route>
-          <Route path="/">
-            {isLoggedIn ? <Redirect to="/main" /> : <Redirect to="/signin" />}
+          <Route path='/'>
+            {isLoggedIn ? <Redirect to='/main' /> : <Redirect to='/signin' />}
           </Route>
         </Switch>
       </div>

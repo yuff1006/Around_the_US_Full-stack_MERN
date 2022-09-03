@@ -22,7 +22,7 @@ function getUserById(req, res) {
     });
 }
 
-function createNewUser(req, res) {
+function signup(req, res) {
   const { name, about, avatar, email, password } = req.body;
   User.findOne({ email }).then((user) => {
     if (user) {
@@ -38,6 +38,19 @@ function createNewUser(req, res) {
         .catch((err) => res.status(400).send(err));
     }
   });
+}
+
+function getCurrentUser(req, res) {
+  const currentUserId = req.user._id;
+  User.findOne(currentUserId)
+    .orFail()
+    .then((user) => {
+      res.status(200).send(user);
+    })
+    .catch(() => {
+      res.status(400).send('User ID not found');
+      next();
+    });
 }
 
 function login(req, res) {
@@ -68,7 +81,14 @@ function updateUser(req, res) {
       handleError(err, req, res);
     });
 }
-
+function createNewUser(req, res) {
+  const { name, about, avatar } = req.body;
+  User.create({ name, about, avatar })
+    .then((user) => res.send({ data: user }))
+    .catch((err) => {
+      handleError(err, req, res);
+    });
+}
 function updateAvatar(req, res) {
   const { avatar } = req.body;
   const owner = req.user._id;
@@ -82,8 +102,10 @@ function updateAvatar(req, res) {
 module.exports = {
   getUsers,
   getUserById,
-  createNewUser,
+  signup,
   updateUser,
   updateAvatar,
   login,
+  getCurrentUser,
+  createNewUser,
 };
