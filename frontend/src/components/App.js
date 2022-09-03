@@ -36,29 +36,19 @@ function App() {
   const [cards, setCards] = useState([]);
   const [deletedCard, setDeletedCard] = useState({});
   const [isButtonStateLoading, setButtonStateLoading] = useState(false);
-
+  console.log(currentUser);
   useEffect(() => {
     const storedJWT = localStorage.getItem('jwt');
     if (storedJWT) {
-      verifyJWT(storedJWT).then(({ data }) => {
+      verifyJWT(storedJWT).then((data) => {
         setIsLoggedIn(true);
-        console.log(data);
         setCurrentUser(data);
       });
     } else {
       return;
     }
   }, []);
-  useEffect(() => {
-    api
-      .getUserInfo()
-      .then((res) => {
-        setCurrentUser(res);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
+
   useEffect(() => {
     function handleEscClose(evt) {
       if (evt.key === 'Escape') {

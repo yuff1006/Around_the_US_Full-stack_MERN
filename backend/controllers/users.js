@@ -42,14 +42,13 @@ function signup(req, res) {
 
 function getCurrentUser(req, res) {
   const currentUserId = req.user._id;
-  User.findOne(currentUserId)
+  User.findOne({ id: currentUserId })
     .orFail()
     .then((user) => {
-      res.status(200).send(user);
+      return res.status(200).send(user);
     })
-    .catch(() => {
-      res.status(400).send('User ID not found');
-      next();
+    .catch((err) => {
+      return res.status(400).send('User ID not found');
     });
 }
 
