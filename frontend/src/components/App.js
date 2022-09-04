@@ -36,17 +36,9 @@ function App() {
   const [cards, setCards] = useState([]);
   const [deletedCard, setDeletedCard] = useState({});
   const [isButtonStateLoading, setButtonStateLoading] = useState(false);
-  console.log(currentUser);
+
   useEffect(() => {
-    const storedJWT = localStorage.getItem('jwt');
-    if (storedJWT) {
-      verifyJWT(storedJWT).then((data) => {
-        setIsLoggedIn(true);
-        setCurrentUser(data);
-      });
-    } else {
-      return;
-    }
+    verifyToken();
   }, []);
 
   useEffect(() => {
@@ -71,6 +63,29 @@ function App() {
       });
   }, []);
 
+  function verifyToken() {
+    const storedJWT = localStorage.getItem('jwt');
+    if (storedJWT) {
+      verifyJWT(storedJWT)
+        .then((data) => {
+          console.log('verifyToken');
+          console.log(data);
+          setIsLoggedIn(true);
+          setCurrentUser({
+            ...currentUser,
+            email: data.email,
+            name: data.name,
+            avatar: data.avatar,
+            about: data.about,
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else {
+      return;
+    }
+  }
   function closeAllPopups() {
     setEditProfilePopupOpen(false);
     setAddPlacePopupOpen(false);
@@ -190,12 +205,14 @@ function App() {
       });
   }
   function handleLoginSubmit(loginCredentials) {
+    console.log(loginCredentials);
     login(loginCredentials)
       .then((data) => {
         console.log(data);
         if (data.token) {
           localStorage.setItem('jwt', data.token);
-          setIsLoggedIn(true);
+          console.log('set');
+          verifyToken();
           history.push('/main');
         } else {
           return;

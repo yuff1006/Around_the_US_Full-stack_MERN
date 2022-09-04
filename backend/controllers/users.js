@@ -42,7 +42,7 @@ function signup(req, res) {
 
 function getCurrentUser(req, res) {
   const currentUserId = req.user._id;
-  User.findOne({ id: currentUserId })
+  User.findOne({ _id: currentUserId })
     .orFail()
     .then((user) => {
       return res.status(200).send(user);
