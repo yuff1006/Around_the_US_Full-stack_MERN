@@ -44,9 +44,9 @@ class Api {
   }
   changeLikeCardStatus(cardId, isLiked) {
     if (isLiked) {
-      return this._handleFetchResponse(`/cards/likes/${cardId}`, 'DELETE');
+      return this._handleFetchResponse(`/cards/${cardId}/likes`, 'DELETE');
     } else {
-      return this._handleFetchResponse(`/cards/likes/${cardId}`, 'PUT');
+      return this._handleFetchResponse(`/cards/${cardId}/likes`, 'PUT');
     }
   }
   editProfilePic(avatarLink) {

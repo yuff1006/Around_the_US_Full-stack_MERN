@@ -34,7 +34,7 @@ function likeCard(req, res) {
   const owner = req.user._id;
   Card.findByIdAndUpdate(cardId, { $addToSet: { likes: owner } }, { new: true })
     .orFail()
-    .then((card) => res.send({ data: card }))
+    .then((card) => res.send(card))
     .catch((err) => {
       handleError(err, req, res);
     });
