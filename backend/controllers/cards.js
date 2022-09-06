@@ -4,7 +4,7 @@ const Card = require('../models/card');
 function getCards(req, res) {
   Card.find()
     .orFail()
-    .then((data) => res.send(data))
+    .then((cards) => res.send(cards))
     .catch((err) => {
       handleError(err, req, res);
     });
@@ -14,7 +14,7 @@ function createCard(req, res) {
   const { name, link } = req.body;
   const owner = req.user._id;
   Card.create({ name, link, owner })
-    .then((card) => res.send({ data: card }))
+    .then((card) => res.send(card))
     .catch((err) => {
       handleError(err, req, res);
     });

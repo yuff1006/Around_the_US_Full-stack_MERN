@@ -42,6 +42,34 @@ function App() {
   }, []);
 
   useEffect(() => {
+    if (isLoggedIn) {
+      api
+        .getUserInfo()
+        .then((userData) => {
+          setCurrentUser({
+            ...currentUser,
+            name: userData.name,
+            about: userData.about,
+            avatar: userData.avatar,
+            email: userData.email,
+            _id: userData._id,
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+      api
+        .getInitialCards()
+        .then((res) => {
+          setCards(res);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  }, [isLoggedIn]);
+
+  useEffect(() => {
     function handleEscClose(evt) {
       if (evt.key === 'Escape') {
         closeAllPopups();
@@ -52,32 +80,13 @@ function App() {
       document.removeEventListener('keyup', handleEscClose);
     };
   }, []);
-  useEffect(() => {
-    api
-      .getInitialCards()
-      .then((res) => {
-        setCards(res);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
 
   function verifyToken() {
     const storedJWT = localStorage.getItem('jwt');
     if (storedJWT) {
       verifyJWT(storedJWT)
         .then((data) => {
-          console.log('verifyToken');
-          console.log(data);
           setIsLoggedIn(true);
-          setCurrentUser({
-            ...currentUser,
-            email: data.email,
-            name: data.name,
-            avatar: data.avatar,
-            about: data.about,
-          });
         })
         .catch((err) => {
           console.log(err);
@@ -205,7 +214,6 @@ function App() {
       });
   }
   function handleLoginSubmit(loginCredentials) {
-    console.log(loginCredentials);
     login(loginCredentials)
       .then((data) => {
         console.log(data);
