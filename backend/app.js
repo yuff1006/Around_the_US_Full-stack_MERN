@@ -10,6 +10,7 @@ app.use(helmet());
 mongoose.connect('mongodb://localhost:27017/arounddb');
 const { PORT = 3000 } = process.env;
 
+const errorHandling = require('./middlewares/errorHandling');
 const userRouter = require('./routes/users');
 const cardsRouter = require('./routes/cards');
 const homePageRouter = require('./routes/app');
@@ -28,4 +29,5 @@ app.use(auth);
 app.use('/', auth, userRouter);
 app.use('/', auth, cardsRouter);
 app.use('/', homePageRouter);
+app.use(errorHandling);
 app.listen(PORT);

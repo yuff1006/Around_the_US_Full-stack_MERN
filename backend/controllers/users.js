@@ -3,25 +3,26 @@ const jwt = require('jsonwebtoken');
 const BadRequestError = require('../errors/BadRequestError');
 const NotFoundError = require('../errors/NotFoundError');
 const UnauthorizedError = require('../errors/UnauthorizedError');
+const ForbiddenError = require('../errors/ForbiddenError');
 const User = require('../models/user');
 
 const { JWT_SECRET } = process.env;
 
-function getUsers(req, res) {
+function getUsers(req, res, next) {
   User.find()
     .orFail(new NotFoundError('No users are found'))
     .then((users) => res.send(users))
     .catch(next);
 }
 
-function getUserById(req, res) {
+function getUserById(req, res, next) {
   User.findById(req.params.id)
     .orFail(new NotFoundError())
     .then((user) => res.send(user))
     .catch(next);
 }
 
-function signup(req, res) {
+function signup(req, res, next) {
   const { name, about, avatar, email, password } = req.body;
   User.findOne({ email })
     .then((user) => {
@@ -41,21 +42,21 @@ function signup(req, res) {
     .catch(next);
 }
 
-function getCurrentUser(req, res) {
+function getCurrentUser(req, res, next) {
   const currentUserId = req.user._id;
   User.findOne({ _id: currentUserId })
     .orFail(new NotFoundError('User ID not found'))
-    .then((user) => {
-      return res.send(user);
-    })
+    .then((user) => res.send(user))
     .catch(next);
 }
 
-function login(req, res) {
+function login(req, res, next) {
   const { email, password } = req.body;
   User.findUserByCredentials(email, password)
-    .orFail(new UnauthorizedError('Invalid login credentials'))
     .then((user) => {
+      if (!user) {
+        throw new UnauthorizedError('Invalid login credentials');
+      }
       const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
         expiresIn: '7d',
       });
@@ -64,7 +65,7 @@ function login(req, res) {
     .catch(next);
 }
 
-function updateUser(req, res) {
+function updateUser(req, res, next) {
   const { name, about } = req.body;
   const owner = req.user._id;
   User.findByIdAndUpdate(
@@ -76,7 +77,7 @@ function updateUser(req, res) {
     .then((user) => res.send(user))
     .catch(next);
 }
-function createNewUser(req, res) {
+function createNewUser(req, res, next) {
   const { name, about, avatar } = req.body;
   User.create({ name, about, avatar })
     .then((user) => res.send(user))
@@ -88,7 +89,7 @@ function createNewUser(req, res) {
       }
     });
 }
-function updateAvatar(req, res) {
+function updateAvatar(req, res, next) {
   const { avatar } = req.body;
   const owner = req.user._id;
   User.findByIdAndUpdate(owner, { avatar }, { new: true, runValidators: true })

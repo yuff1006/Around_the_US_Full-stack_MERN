@@ -2,14 +2,14 @@ const NotFoundError = require('../errors/NotFoundError');
 const UnauthorizedError = require('../errors/UnauthorizedError');
 const Card = require('../models/card');
 
-function getCards(req, res) {
+function getCards(req, res, next) {
   Card.find()
     .orFail(new NotFoundError())
     .then((cards) => res.send(cards))
     .catch(next);
 }
 
-function createCard(req, res) {
+function createCard(req, res, next) {
   const { name, link } = req.body;
   const owner = req.user._id;
   Card.create({ name, link, owner })
@@ -23,14 +23,14 @@ function createCard(req, res) {
     });
 }
 
-function deleteCard(req, res) {
+function deleteCard(req, res, next) {
   Card.findByIdAndRemove(req.params.cardId)
     .orFail(new NotFoundError('Cannot find the card to delete'))
     .then((card) => res.send(card))
     .catch(next);
 }
 
-function likeCard(req, res) {
+function likeCard(req, res, next) {
   const { cardId } = req.params;
   const owner = req.user._id;
   Card.findByIdAndUpdate(cardId, { $addToSet: { likes: owner } }, { new: true })
@@ -39,7 +39,7 @@ function likeCard(req, res) {
     .catch(next);
 }
 
-function unlikeCard(req, res) {
+function unlikeCard(req, res, next) {
   const { cardId } = req.params;
   const owner = req.user._id;
   Card.findByIdAndUpdate(cardId, { $pull: { likes: owner } }, { new: true })

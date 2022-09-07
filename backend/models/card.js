@@ -1,7 +1,5 @@
 const mongoose = require('mongoose');
 
-const regexForImageLink = /https?:\/\/(www\.)?\S+\/[-._~:/?%#[\]@!$&'()*+,;=\w]*#?$/;
-
 const cardSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -13,7 +11,8 @@ const cardSchema = new mongoose.Schema({
     type: String,
     required: true,
     validate: {
-      validator: (v) => regexForImageLink.test(v),
+      validator: () => validator.isURL,
+      message: 'You must enter a valid URL',
     },
   },
   owner: {

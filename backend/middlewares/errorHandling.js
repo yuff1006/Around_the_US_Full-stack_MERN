@@ -1,3 +1,4 @@
 module.exports = (err, req, res, next) => {
-  res.status(500).send(err.message);
+  console.log(err);
+  res.status(500).send(err ? err.message : 'An error occured on the server');
 };

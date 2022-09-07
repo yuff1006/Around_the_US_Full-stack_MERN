@@ -2,9 +2,6 @@ const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrypt = require('bcryptjs');
 
-const regexForAvatarLink =
-  /https?:\/\/(www\.)?\S+\/[-._~:/?%#[\]@!$&'()*+,;=\w]*#?$/;
-
 const userSchema = new mongoose.Schema({
   email: {
     type: String,
@@ -36,7 +33,8 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: 'https://pictures.s3.yandex.net/resources/avatar_1604080799.jpg',
     validate: {
-      validator: (v) => regexForAvatarLink.test(v),
+      validator: (value) => (value === '' ? true : validator.isURL),
+      message: 'You must enter a valid URL',
     },
   },
 });
