@@ -1,69 +1,67 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const handleError = require('../helpers/utils');
+const BadRequestError = require('../errors/BadRequestError');
+const NotFoundError = require('../errors/NotFoundError');
+const UnauthorizedError = require('../errors/UnauthorizedError');
 const User = require('../models/user');
 
 const { JWT_SECRET } = process.env;
 
 function getUsers(req, res) {
   User.find()
-    .orFail()
-    .then((users) => res.send(user))
-    .catch((err) => {
-      handleError(err, req, res);
-    });
+    .orFail(new NotFoundError('No users are found'))
+    .then((users) => res.send(users))
+    .catch(next);
 }
+
 function getUserById(req, res) {
   User.findById(req.params.id)
-    .orFail()
+    .orFail(new NotFoundError())
     .then((user) => res.send(user))
-    .catch((err) => {
-      handleError(err, req, res);
-    });
+    .catch(next);
 }
 
 function signup(req, res) {
   const { name, about, avatar, email, password } = req.body;
-  User.findOne({ email }).then((user) => {
-    if (user) {
-      res.send({ error: 'This email has already been registered' });
-      // TODO
-    } else {
-      bcrypt
-        .hash(password, 10)
-        .then((hash) =>
-          User.create({ email, password: hash, about, avatar, name }),
-        )
-        .then((userRes) => res.send(userRes))
-        .catch((err) => res.status(400).send(err));
-    }
-  });
+  User.findOne({ email })
+    .then((user) => {
+      if (user) {
+        throw new ForbiddenError('This email has already been registered');
+        // TODO
+      } else {
+        bcrypt
+          .hash(password, 10)
+          .then((hash) =>
+            User.create({ email, password: hash, about, avatar, name }),
+          )
+          .then((userRes) => res.send(userRes))
+          .catch(next);
+      }
+    })
+    .catch(next);
 }
 
 function getCurrentUser(req, res) {
   const currentUserId = req.user._id;
   User.findOne({ _id: currentUserId })
-    .orFail()
+    .orFail(new NotFoundError('User ID not found'))
     .then((user) => {
-      return res.status(200).send(user);
+      return res.send(user);
     })
-    .catch((err) => {
-      return res.status(400).send('User ID not found');
-    });
+    .catch(next);
 }
 
 function login(req, res) {
   const { email, password } = req.body;
   User.findUserByCredentials(email, password)
+    .orFail(new UnauthorizedError('Invalid login credentials'))
     .then((user) => {
       const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
         expiresIn: '7d',
       });
       res.send({ token });
     })
-    .catch((err) => {
-      res.status(401).send({ message: err.message });
-    });
+    .catch(next);
 }
 
 function updateUser(req, res) {
@@ -74,29 +72,29 @@ function updateUser(req, res) {
     { name, about },
     { new: true, runValidators: true },
   )
-    .orFail()
+    .orFail(new BadRequestError())
     .then((user) => res.send(user))
-    .catch((err) => {
-      handleError(err, req, res);
-    });
+    .catch(next);
 }
 function createNewUser(req, res) {
   const { name, about, avatar } = req.body;
   User.create({ name, about, avatar })
     .then((user) => res.send(user))
     .catch((err) => {
-      handleError(err, req, res);
+      if (err.name === 'ValidationError') {
+        next(new BadRequestError('Missing or invalid email or password'));
+      } else {
+        next(err);
+      }
     });
 }
 function updateAvatar(req, res) {
   const { avatar } = req.body;
   const owner = req.user._id;
   User.findByIdAndUpdate(owner, { avatar }, { new: true, runValidators: true })
-    .orFail()
+    .orFail(new BadRequestError())
     .then((user) => res.send(user))
-    .catch((err) => {
-      handleError(err, req, res);
-    });
+    .catch(next);
 }
 module.exports = {
   getUsers,

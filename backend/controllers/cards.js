@@ -1,13 +1,12 @@
-const handleError = require('../helpers/utils');
+const NotFoundError = require('../errors/NotFoundError');
+const UnauthorizedError = require('../errors/UnauthorizedError');
 const Card = require('../models/card');
 
 function getCards(req, res) {
   Card.find()
-    .orFail()
+    .orFail(new NotFoundError())
     .then((cards) => res.send(cards))
-    .catch((err) => {
-      handleError(err, req, res);
-    });
+    .catch(next);
 }
 
 function createCard(req, res) {
@@ -16,39 +15,37 @@ function createCard(req, res) {
   Card.create({ name, link, owner })
     .then((card) => res.send(card))
     .catch((err) => {
-      handleError(err, req, res);
+      if (err.name === 'ValidationError') {
+        next(new UnauthorizedError('Invalid login credentials'));
+      } else {
+        next(err);
+      }
     });
 }
 
 function deleteCard(req, res) {
   Card.findByIdAndRemove(req.params.cardId)
-    .orFail()
+    .orFail(new NotFoundError('Cannot find the card to delete'))
     .then((card) => res.send(card))
-    .catch((err) => {
-      handleError(err, req, res);
-    });
+    .catch(next);
 }
 
 function likeCard(req, res) {
   const { cardId } = req.params;
   const owner = req.user._id;
   Card.findByIdAndUpdate(cardId, { $addToSet: { likes: owner } }, { new: true })
-    .orFail()
+    .orFail(new NotFoundError('Cannot find the card to like'))
     .then((card) => res.send(card))
-    .catch((err) => {
-      handleError(err, req, res);
-    });
+    .catch(next);
 }
 
 function unlikeCard(req, res) {
   const { cardId } = req.params;
   const owner = req.user._id;
   Card.findByIdAndUpdate(cardId, { $pull: { likes: owner } }, { new: true })
-    .orFail()
+    .orFail(new NotFoundError('Cannot find the card to unlike'))
     .then((card) => res.send(card))
-    .catch((err) => {
-      handleError(err, req, res);
-    });
+    .catch(next);
 }
 
 module.exports = {
