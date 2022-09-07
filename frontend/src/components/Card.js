@@ -3,7 +3,7 @@ import { CurrentUserContext } from '../contexts/CurrentUserContext';
 
 function Card({ cardData, onCardClick, onCardLike, onCardDelete }) {
   const currentUser = useContext(CurrentUserContext);
-  const isOwn = cardData.owner._id === currentUser._id;
+  const isOwn = cardData.owner === currentUser._id;
   const cardDeleteButtonClassName = isOwn
     ? 'card__trash'
     : 'card__trash card__trash_hidden';

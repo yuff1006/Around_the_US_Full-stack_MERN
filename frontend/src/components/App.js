@@ -151,8 +151,11 @@ function App() {
         setButtonStateLoading(false);
       });
   }
+  console.log(cards);
   function handleLikeClick(card) {
-    const isLiked = card.likes.some((user) => user._id === currentUser._id);
+    const isLiked = card.likes.some((user) => {
+      return user === currentUser._id;
+    });
     setButtonStateLoading(true);
     api
       .changeLikeCardStatus(card._id, isLiked)
