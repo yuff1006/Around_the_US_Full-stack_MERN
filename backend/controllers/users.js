@@ -8,7 +8,7 @@ const { JWT_SECRET } = process.env;
 function getUsers(req, res) {
   User.find()
     .orFail()
-    .then((users) => res.send({ data: users }))
+    .then((users) => res.send(user))
     .catch((err) => {
       handleError(err, req, res);
     });
@@ -16,7 +16,7 @@ function getUsers(req, res) {
 function getUserById(req, res) {
   User.findById(req.params.id)
     .orFail()
-    .then((user) => res.send({ data: user }))
+    .then((user) => res.send(user))
     .catch((err) => {
       handleError(err, req, res);
     });
@@ -75,7 +75,7 @@ function updateUser(req, res) {
     { new: true, runValidators: true },
   )
     .orFail()
-    .then((user) => res.send({ data: user }))
+    .then((user) => res.send(user))
     .catch((err) => {
       handleError(err, req, res);
     });
@@ -83,7 +83,7 @@ function updateUser(req, res) {
 function createNewUser(req, res) {
   const { name, about, avatar } = req.body;
   User.create({ name, about, avatar })
-    .then((user) => res.send({ data: user }))
+    .then((user) => res.send(user))
     .catch((err) => {
       handleError(err, req, res);
     });
@@ -93,7 +93,7 @@ function updateAvatar(req, res) {
   const owner = req.user._id;
   User.findByIdAndUpdate(owner, { avatar }, { new: true, runValidators: true })
     .orFail()
-    .then((user) => res.send({ data: user }))
+    .then((user) => res.send(user))
     .catch((err) => {
       handleError(err, req, res);
     });

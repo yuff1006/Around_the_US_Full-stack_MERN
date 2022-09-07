@@ -151,7 +151,7 @@ function App() {
         setButtonStateLoading(false);
       });
   }
-  console.log(cards);
+
   function handleLikeClick(card) {
     const isLiked = card.likes.some((user) => {
       return user === currentUser._id;
@@ -219,12 +219,18 @@ function App() {
   function handleLoginSubmit(loginCredentials) {
     login(loginCredentials)
       .then((data) => {
-        console.log(data);
         if (data.token) {
           localStorage.setItem('jwt', data.token);
-          console.log('set');
-          verifyToken();
-          history.push('/main');
+          verifyJWT(data.token).then((res) => {
+            setCurrentUser({
+              ...currentUser,
+              name: res.name,
+              about: res.about,
+              avatar: res.avatar,
+              email: res.email,
+            });
+            setIsLoggedIn(true);
+          });
         } else {
           return;
         }

@@ -12,7 +12,10 @@ class Api {
   _handleFetchResponse(path, methodUsed = 'GET', bodyContent = undefined) {
     return fetch(`${this._baseUrl}${path}`, {
       method: methodUsed,
-      headers: this._headers,
+      headers: {
+        authorization: `Bearer ${localStorage.getItem('jwt')}`,
+        'Content-Type': 'application/json',
+      },
       body: bodyContent,
     }).then(this.checkServerResponse);
   }
@@ -58,10 +61,6 @@ class Api {
 }
 export const api = new Api({
   baseUrl: 'http://localhost:3000' || 'http://localhost:3001',
-  headers: {
-    authorization: `Bearer ${localStorage.getItem('jwt')}`,
-    'Content-Type': 'application/json',
-  },
 });
 
 export default Api;

@@ -20,8 +20,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 app.use(cors({ origin: allowedCors, methods: DEFAULT_ALLOWED_METHODS }));
-app.post('/signin', login);
 app.post('/signup', signup);
+app.post('/signin', login);
 
 app.use(auth);
 
