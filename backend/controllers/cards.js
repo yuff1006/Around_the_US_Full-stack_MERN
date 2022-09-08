@@ -12,8 +12,13 @@ function getCards(req, res, next) {
 function createCard(req, res, next) {
   const { name, link } = req.body;
   const owner = req.user._id;
+  console.log(name);
+  console.log(link);
+  console.log(owner);
   Card.create({ name, link, owner })
-    .then((card) => res.send(card))
+    .then((card) => {
+      res.send(card);
+    })
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new UnauthorizedError('Invalid login credentials'));

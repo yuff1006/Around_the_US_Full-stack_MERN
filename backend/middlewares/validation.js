@@ -17,9 +17,11 @@ const validateEmail = (value, helpers) => {
 
 const validateCardCreation = celebrate({
   body: Joi.object().keys({
-    name: Joi.string()
-      .required()
-      .messages({ 'string.empty': 'Name cannot be empty' }),
+    name: Joi.string().required().min(2).max(30).messages({
+      'string.empty': 'Name cannot be empty',
+      'string.min': 'Name needs to be at least 2 characters long',
+      'string.max': 'Name needs to be shorter than 30 characters long',
+    }),
     link: Joi.string().required().custom(validateURL).messages({
       'string.empty': 'URL cannot be empty',
     }),
