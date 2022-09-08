@@ -5,14 +5,14 @@ const validateURL = (value, helpers) => {
   if (validator.isURL(value)) {
     return value;
   }
-  return helpers.error('string.uri');
+  return helpers.message('The URL is not valid');
 };
 
 const validateEmail = (value, helpers) => {
   if (validator.isEmail(value)) {
     return value;
   }
-  return helpers.error('string.uri');
+  return helpers.message('The email is not valid');
 };
 
 const validateCardCreation = celebrate({
@@ -40,13 +40,33 @@ const validateCredentials = celebrate({
 
 const validateAvatar = celebrate({
   body: Joi.object().keys({
-    avatar: Joi.string().custom(validateUrl),
+    avatar: Joi.string().custom(validateURL),
+  }),
+});
+
+const validateUserProfile = celebrate({
+  body: Joi.object().keys({
+    name: Joi.string().min(2).messages({
+      'string.min': 'Name needs to be at least 2 characters long',
+    }),
+    about: Joi.string().min(2).messages({
+      'string.min': 'Name needs to be at least 2 characters long',
+    }),
+  }),
+});
+
+const validateUniqueId = celebrate({
+  body: Joi.object().keys({
+    _id: Joi.string().hex().length(24).messages({
+      'any.invalid': 'Invalid User Name',
+    }),
   }),
 });
 
 module.exports = {
-  validateURL,
-  validateEmail,
   validateCardCreation,
   validateCredentials,
+  validateAvatar,
+  validateUserProfile,
+  validateUniqueId,
 };

@@ -16,13 +16,14 @@ const cardsRouter = require('./routes/cards');
 const homePageRouter = require('./routes/app');
 const { signup, login } = require('./controllers/users');
 const auth = require('./middlewares/auth');
+const { validateCredentials } = require('./middlewares/validation');
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 app.use(cors({ origin: allowedCors, methods: DEFAULT_ALLOWED_METHODS }));
-app.post('/signup', signup);
-app.post('/signin', login);
+app.post('/signup', validateCredentials, signup);
+app.post('/signin', validateCredentials, login);
 
 app.use(auth);
 
