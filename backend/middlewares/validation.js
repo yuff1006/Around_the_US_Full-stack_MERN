@@ -5,9 +5,10 @@ const validateURL = (value, helpers) => {
   if (validator.isURL(value)) {
     return value;
   }
-  return helpers.message('The URL is not valid');
+  //   return helpers.message('The URL is not valid');
+  return 'wrong';
 };
-
+console.log(validateURL('www@ww.com'));
 const validateEmail = (value, helpers) => {
   if (validator.isEmail(value)) {
     return value;
