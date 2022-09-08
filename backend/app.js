@@ -39,6 +39,7 @@ app.use('/', auth, userRouter);
 app.use('/', auth, cardsRouter);
 app.use('/', homePageRouter);
 app.use(errorLogger);
+
 app.use(errors());
 app.use(errorHandling);
 app.listen(PORT);
