@@ -53,7 +53,6 @@ function getCurrentUser(req, res, next) {
 function login(req, res, next) {
   const { email, password } = req.body;
   User.findUserByCredentials(email, password)
-    .orFail(new UnauthorizedError())
     .then((user) => {
       if (!user) {
         throw new UnauthorizedError('Invalid login credentials');

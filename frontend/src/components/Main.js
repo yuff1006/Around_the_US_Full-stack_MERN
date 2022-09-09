@@ -12,7 +12,6 @@ function Main({
   onCardDelete,
 }) {
   const [userInfo, setUserInfo] = useState({});
-  console.log(userInfo.name);
   const currentUser = useContext(CurrentUserContext);
   const cards = useContext(CardsContext);
 
