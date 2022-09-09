@@ -25,11 +25,7 @@ app.use(express.json());
 
 app.use(cors({ origin: allowedCors, methods: DEFAULT_ALLOWED_METHODS }));
 app.use(requestLogger);
-app.get('/crash-test', () => {
-  setTimeout(() => {
-    throw new Error('Server will crash now');
-  }, 0);
-});
+
 app.post('/signup', validateCredentials, signup);
 app.post('/signin', validateCredentials, login);
 
