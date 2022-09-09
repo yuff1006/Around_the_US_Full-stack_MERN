@@ -3,10 +3,10 @@ const jwt = require('jsonwebtoken');
 const BadRequestError = require('../errors/BadRequestError');
 const NotFoundError = require('../errors/NotFoundError');
 const UnauthorizedError = require('../errors/UnauthorizedError');
-const ForbiddenError = require('../errors/ForbiddenError');
+const ConflictError = require('../errors/ConflictError');
 const User = require('../models/user');
 
-const { JWT_SECRET } = process.env;
+const { JWT_SECRET = 'dev' } = process.env;
 
 function getUsers(req, res, next) {
   User.find()
@@ -25,10 +25,10 @@ function getUserById(req, res, next) {
 function signup(req, res, next) {
   const { name, about, avatar, email, password } = req.body;
   User.findOne({ email })
+    .select('+password')
     .then((user) => {
       if (user) {
-        throw new ForbiddenError('This email has already been registered');
-        // TODO
+        throw new ConflictError('This email has already been registered');
       } else {
         bcrypt
           .hash(password, 10)
@@ -53,6 +53,7 @@ function getCurrentUser(req, res, next) {
 function login(req, res, next) {
   const { email, password } = req.body;
   User.findUserByCredentials(email, password)
+    .orFail(new UnauthorizedError())
     .then((user) => {
       if (!user) {
         throw new UnauthorizedError('Invalid login credentials');

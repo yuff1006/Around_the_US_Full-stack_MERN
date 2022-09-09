@@ -29,9 +29,17 @@ function createCard(req, res, next) {
 }
 
 function deleteCard(req, res, next) {
-  Card.findByIdAndRemove(req.params.cardId)
+  const owner = req.user._id;
+  Card.findById(req.params.cardId)
     .orFail(new NotFoundError('Cannot find the card to delete'))
-    .then((card) => res.send(card))
+    .then((card) => {
+      if (card.owner !== owner) {
+        throw new UnauthorizedError('Cannot delete cards you did not create');
+      }
+      Card.findByIdAndRemove(req.params.cardId)
+        .then((card) => res.send(card))
+        .catch(next);
+    })
     .catch(next);
 }
 

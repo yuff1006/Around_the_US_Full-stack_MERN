@@ -35,8 +35,8 @@ app.post('/signin', validateCredentials, login);
 
 app.use(auth);
 
-app.use('/', auth, userRouter);
-app.use('/', auth, cardsRouter);
+app.use('/', userRouter);
+app.use('/', cardsRouter);
 app.use('/', homePageRouter);
 app.use(errorLogger);
 

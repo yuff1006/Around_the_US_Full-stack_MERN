@@ -272,11 +272,7 @@ function App() {
           <ProtectedRoute path={'/main'} isLoggedIn={isLoggedIn}>
             <Route path='/main'>
               <CurrentUserContext.Provider value={currentUser}>
-                <Header
-                  isLoggedIn={isLoggedIn}
-                  onLogOut={handleLogOut}
-                  loggedInUser={currentUser.email}
-                />
+                <Header isLoggedIn={isLoggedIn} onLogOut={handleLogOut} />
                 <CardsContext.Provider value={cards}>
                   <Main
                     onEditProfileClick={handleEditProfileClick}
