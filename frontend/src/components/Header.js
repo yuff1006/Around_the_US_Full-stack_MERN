@@ -6,6 +6,7 @@ import { CurrentUserContext } from '../contexts/CurrentUserContext';
 
 function Header({ isLoggedIn, onPage, onLogOut }) {
   const currentUser = useContext(CurrentUserContext);
+
   const [isHamburgerMenuActive, setIsHamburgerMenuActive] = useState(false);
   const history = useHistory();
   const handleButtonClick = (evt) => {
@@ -32,7 +33,7 @@ function Header({ isLoggedIn, onPage, onLogOut }) {
         onPage={onPage}
         isActive={isHamburgerMenuActive}
         onLogOut={onLogOut}
-        loggedInUser={currentUser.email}
+        loggedInUser={currentUser?.email}
       />
       <header className='header'>
         <img
@@ -41,7 +42,9 @@ function Header({ isLoggedIn, onPage, onLogOut }) {
           src={headerLogo}
         />
         <div className='header__credential-container'>
-          {isLoggedIn && <p className='header__account'>{currentUser.email}</p>}
+          {isLoggedIn && (
+            <p className='header__account'>{currentUser?.email}</p>
+          )}
           <button
             type='button'
             className='header__button'

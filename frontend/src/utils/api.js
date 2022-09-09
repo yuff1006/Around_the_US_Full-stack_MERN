@@ -60,7 +60,7 @@ class Api {
   }
 }
 export const api = new Api({
-  baseUrl: process.env.REACT_APP_DOMAIN_NAME,
+  baseUrl: 'http://localhost:3000',
 });
 
 export default Api;
