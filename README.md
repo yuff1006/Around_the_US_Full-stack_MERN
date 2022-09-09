@@ -2,7 +2,7 @@
 
 An Instagram-like app that displays user's pictures and places, with functionality to like, delete, and custimize.
 
-![Overview](./src/images/overview.png)
+![Overview](./frontend/src/images/overview.png)
 
 ## Live Demo
 
